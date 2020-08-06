@@ -11,6 +11,7 @@
     @yield('content')
     @yield('modal')
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="http://unpkg.com/portal-vue"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
