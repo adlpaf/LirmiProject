@@ -26,35 +26,10 @@
             </table>
         </div>
     </div>
-@endsection
-
-@section('modal')
-    <div class="modal fade" id="modalUser" tabindex="-1" role="dialog" aria-labelledby="modalUserLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalUserLabel">Registrar usuario</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-4">
-                            <img src="">
-                        </div>
-                        <div class="col-7">
-                            <label id="first_name"></label><br />
-                            <label id="last_name"></label><br />
-                            <label id="email"></label>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                    <button type="button" class="btn btn-primary" onclick="app.registerUser()">Registrar</button>
-                </div>
-            </div>
+    <div class="row">
+        <div class="col-10"></div>
+        <div class="col-2">
+            <a href="{{url('registered')}}" class="btn btn-primary">Usuarios registrados</a>
         </div>
     </div>
 @endsection
@@ -68,6 +43,7 @@
                 showUsers: [],
                 userSelected: [],
                 search: '',
+                message: '',
             },
             created: function () {
                 this.getUsers();
@@ -98,25 +74,53 @@
                 },
                 evaluateSearch: function(number) {
                     if (number <= 0 || number > 15) {
-                        console.log("Error! Número fuera del rango");
+                        // console.log("Error! Número fuera del rango");
+                        this.message = "Lo sentimos, intente más tarde.";
+                        $("#message").text(this.message);
+                        $("#modalError").modal();
                         this.showUsers = this.users;
                         return;
                     }
                     if (Number.isNaN(number) || number == '') {
-                        console.log("Error! No es un número");
+                        // console.log("Error! No es un número");
+                        this.message = "Usuario no encontrado";
+                        $("#message").text(this.message);
+                        $("#modalError").modal();
                         this.showUsers = this.users;
                         return;
                     }
                     this.showUsers = [];
+                    var flag = false;
                     this.users.map(element => {
                         if(element.id == number) {
+                            flag = true;
                             this.showUsers.push(element);
                         }
                     });
-                    console.log(number);
+                    if (!flag) {
+                        this.message = "Usuario no encontrado";
+                        $("#message").text(this.message);
+                        $("#modalError").modal();
+                        this.showUsers = this.users;
+                    }
+                    // console.log(number);
                 },
                 registerUser: function() {
-                    console.log(this.userSelected);
+                    axios.post("{{url('users')}}",{
+                        data: this.userSelected,
+                    }).then(response => {
+                        // console.log(response.data);
+                        this.message = "Usuario agregado con éxito";
+                        $("#message").text(this.message);
+                        $("#modalUser").modal('toggle');
+                        $("#modalSuccess").modal();
+                    }).catch(error => {
+                        // console.log(error.response);
+                        this.message = "Lo sentimos, intente más tarde.";
+                        $("#message").text(this.message);
+                        $("#modalError").modal();
+                    });
+                    // console.log(this.userSelected);
                 }
             }
         });

@@ -16,3 +16,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('home');
 });
+
+Route::resource('users', 'UserRegisterController');
+Route::get('registered', function() {
+    return view('users');
+});
